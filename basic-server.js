@@ -1,10 +1,9 @@
-/* Import node's http module: */
 var http = require("http");
+var requestHandler = require('./request-handler');
 
 /* This is the callback function that will be called each time a
  * client (i.e.. a web browser) makes a request to our server. */
 var requestListener = function (request, response) {
-
   /* Request is an http.ServerRequest object containing various data
    * about the client request - such as what URL the browser is
    * requesting. */
@@ -28,11 +27,12 @@ var requestListener = function (request, response) {
   /* .writeHead() tells our server what HTTP status code to send back
    * to the client, and what headers to include on the response. */
 
+  requestHandler.handleRequest(request, response);
   /* Make sure to always call response.end() - Node will not send
    * anything back to the client until you do. The string you pass to
    * response.end() will be the body of the response - i.e. what shows
    * up in the browser.*/
-  response.end("Hello, World!");
+  // response.end("Hello, World! ");
 };
 
 /* These headers will allow Cross-Origin Resource Sharing.
@@ -64,14 +64,3 @@ var ip = "127.0.0.1";
 var server = http.createServer(requestListener);
 console.log("Listening on http://" + ip + ":" + port);
 server.listen(port, ip);
-
-/* To start this server, run:
-     node basic-server.js
- *  on the command line.
-
- * To connect to the server, load http://127.0.0.1:8080 in your web
- * browser.
-
- * server.listen() will continue running as long as there is the
- * possibility of serving more requests. To stop your server, hit
- * Ctrl-C on the command line. */
