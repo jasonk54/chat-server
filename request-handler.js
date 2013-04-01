@@ -22,17 +22,16 @@ var handleRequest = function(request, response) {
   "access-control-max-age": 10 // Seconds.
   };
   var headers = defaultCorsHeaders;
-
   headers['Content-Type'] = "text/plain";
 
-  request.on('data', function(chunk){
+  request.on('data', function(chunk) {
     if (request.method === 'POST') {
       data.push(querystring.parse(chunk.toString()));
     }
   });
 
-  request.on('end', function(){
-    if(request.method === 'POST'){
+  request.on('end', function() {
+    if(request.method === 'POST') {
       statusCode = 302;
       response.writeHead(statusCode, headers);
       response.end('\n');
