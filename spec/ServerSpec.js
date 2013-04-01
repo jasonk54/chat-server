@@ -10,9 +10,6 @@ function StubRequest(url, method, postdata) {
   var self = this;
   this.addListener = this.on = function(type, callback) {
     if (type == "data") {
-      // turn postdata (dictionary object) into raw postdata
-      // raw postdata looks like this:
-      // username=jono&message=do+my+bidding
       var fields = [];
       for (var key in self._postData) {
         fields.push(key + "=" + self._postData[key].replace(" ", "+"));
@@ -67,6 +64,7 @@ describe("Node Server Request Listener Function", function() {
 
    expect(res._responseCode).toEqual(302);
    expect(res._data).toEqual("\n");
+   console.log(res._data);
    expect(res._ended).toEqual(true);
 
    // Now if we request the log for that room,
@@ -78,7 +76,7 @@ describe("Node Server Request Listener Function", function() {
    handler.handleRequest(req, res);
 
    expect(res._responseCode).toEqual(200);
-   var messageLog = JSON.parse(res.data);
+   var messageLog = JSON.parse(res._data);
    expect(messageLog.length).toEqual(1);
    expect(messageLog[0].username).toEqual("Jono");
    expect(messageLog[0].message).toEqual("Do my bidding!");
@@ -92,7 +90,6 @@ describe("Node Server Request Listener Function", function() {
    var res = new StubResponse();
 
    handler.handleRequest(req, res);
-   console.log("Res is " + res);
 
    // Wait some time before checking results:
    waits(1000);

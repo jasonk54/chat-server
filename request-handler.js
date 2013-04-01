@@ -3,33 +3,45 @@
  * basic-server.js.  So you must figure out how to export the function
  * from this file and include it in basic-server.js. Check out the
  * node module documentation at http://nodejs.org/api/modules.html. */
+var http = require('http');
+var url = require('url');
+var querystring = require('querystring');
+var data = [];
 
 var handleRequest = function(request, response) {
-zaz  request.on('data', function(data){
-    console.log(data);
-  })
+  console.log("Serving request type " + request.method + " for url " + request.url);
+  if (url.parse(request.url).pathname === '/classes/room1') {
+    var statusCode = 200;
+  } else {
+    var statusCode = 404;
+  }
+  var defaultCorsHeaders = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "access-control-allow-headers": "content-type, accept",
+  "access-control-max-age": 10 // Seconds.
+  };
+  var headers = defaultCorsHeaders;
 
-  response.end("Hello, World! ");
+  headers['Content-Type'] = "text/plain";
 
+  request.on('data', function(chunk){
+    if (request.method === 'POST') {
+      data.push(querystring.parse(chunk.toString()));
+    }
+  });
+
+  request.on('end', function(){
+    if(request.method === 'POST'){
+      statusCode = 302;
+      response.writeHead(statusCode, headers);
+      response.end('\n');
+    } else {
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(data) || []);
+    }
+  });
 };
 
 exports.handleRequest = handleRequest;
 
-    // $.ajax({
-    //   url: baseURL,
-    //   type: 'post',
-    //   contentType: 'application/json',
-    //   data: JSON.stringify(messageData)
-    // }).done(function (data) {
-    //   addMessages($.extend(messageData, data));
-    // });
-  // });
-
-  // var grabMessages = function (limit) {
-  //   $.ajax({
-  //     url: baseURL,
-  //     type: 'get',
-  //     data: 'where={"createdAt":{"$gte":{"__type":"Date","iso":"' + (new Date(limit)).toISOString() + '"}}}'
-  //   }).done(function (data) {
-  //     data.results && data.results.forEach(addMessages);
-  //   });
