@@ -13,7 +13,7 @@ var handleRequest = function(request, response) {
   if (url.parse(request.url).pathname === '/classes/room1') {
     var statusCode = 200;
   } else {
-    var statusCode = 404;
+    var statusCode = 404;   //need to fix this
   }
   var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
@@ -22,11 +22,14 @@ var handleRequest = function(request, response) {
   "access-control-max-age": 10 // Seconds.
   };
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = "text/plain";
+  headers['Content-Type'] = "application/json";
 
   request.on('data', function(chunk) {
     if (request.method === 'POST') {
-      data.push(querystring.parse(chunk.toString()));
+      var message = querystring.parse(chunk.toString());
+      console.log('message: ');
+      console.log(message);
+      data.push(message);
     }
   });
 
@@ -35,11 +38,13 @@ var handleRequest = function(request, response) {
       statusCode = 302;
       response.writeHead(statusCode, headers);
       response.end('\n');
-    } else {
+    } else if (request.method === 'GET') {
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(data) || []);
     }
   });
+  response.writeHead(statusCode, headers);
+  response.end(JSON.stringify(data));
 };
 
 exports.handleRequest = handleRequest;
