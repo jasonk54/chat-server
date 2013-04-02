@@ -67,8 +67,6 @@ describe("Node Server Request Listener Function", function() {
    console.log(res._data);
    expect(res._ended).toEqual(true);
 
-   // Now if we request the log for that room,
-   // the message we posted should be there:
    req = new StubRequest("http://127.0.0.1:8080/classes/room1",
                              "GET");
    res = new StubResponse();
@@ -88,10 +86,7 @@ describe("Node Server Request Listener Function", function() {
    var req = new StubRequest("http://127.0.0.1:8080/arglebargle",
                              "GET");
    var res = new StubResponse();
-
    handler.handleRequest(req, res);
-
-   // Wait some time before checking results:
    waits(1000);
 
    runs(function() {
@@ -99,6 +94,4 @@ describe("Node Server Request Listener Function", function() {
      expect(res._ended).toEqual(true);
    });
  });
-
-
 });

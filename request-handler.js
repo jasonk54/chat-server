@@ -1,8 +1,3 @@
-/* You should implement your request handler function in this file.
- * But you need to pass the function to http.createServer() in
- * basic-server.js.  So you must figure out how to export the function
- * from this file and include it in basic-server.js. Check out the
- * node module documentation at http://nodejs.org/api/modules.html. */
 var http = require('http');
 var url = require('url');
 var querystring = require('querystring');
@@ -10,10 +5,10 @@ var data = [];
 
 var handleRequest = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
-  if (url.parse(request.url).pathname === '/classes/room1') {
+  if ((url.parse(request.url).pathname).match(/\/classes\//)) {
     var statusCode = 200;
   } else {
-    var statusCode = 404;   //need to fix this
+    var statusCode = 404;
   }
   var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
@@ -27,8 +22,6 @@ var handleRequest = function(request, response) {
   request.on('data', function(chunk) {
     if (request.method === 'POST') {
       var message = querystring.parse(chunk.toString());
-      console.log('message: ');
-      console.log(message);
       data.push(message);
     }
   });
